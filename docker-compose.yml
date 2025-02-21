@@ -1,4 +1,3 @@
-version: '3'
 services:
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -8,14 +7,11 @@ services:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: boersenspiel-zookeeper:2181  # 🔹 HIER die richtige Adresse setzen!
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: boersenspiel-zookeeper-l22h:2181  # ✅ Nutze den Render Private Service Namen!
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://boersenspiel-kafka-l33k:10000  # ✅ Render Private Service für Kafka!
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:10000
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_NUM_PARTITIONS: 3
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - kafka_network
     ports:
-      - "9092:9092"
-
-networks:
-  kafka_network:
-    driver: bridge
+      - "10000:10000"
