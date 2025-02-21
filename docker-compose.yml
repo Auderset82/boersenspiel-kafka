@@ -7,6 +7,12 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOO_MAX_CLIENT_CNXNS: 60
+      ZOO_AUTOPURGE_SNAP_RETAIN_COUNT: 3
+      ZOO_AUTOPURGE_PURGE_INTERVAL: 1
+      JUTE_MAXBUFFER: 20971520  # Erhöht die max. Nachrichtengröße
+    ports:
+      - "2181:2181"
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -14,10 +20,11 @@ services:
     restart: always
     depends_on:
       - zookeeper
+    ports:
+      - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    ports:
-      - "9092:9092"
+      KAFKA_MESSAGE_MAX_BYTES: 20971520  # 20MB max. Nachrichtengröße
